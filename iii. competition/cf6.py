@@ -176,7 +176,7 @@ def reproduction(individual, population, b_i, cr, limits, dimension):
 def tchebycheff_formulation(evaluation, z, weights):
     return max([weights[0] * abs(evaluation[0] - z[0]), weights[1] * abs(evaluation[1] - z[1])])
 
-def neighborhood_actualization(subproblem, child, child_evaluation, child_restrictions, population, b_i, weights, z, evaluations, constraints):
+def neighborhood_actualization(dimension, subproblem, child, child_evaluation, child_restrictions, population, b_i, weights, z, evaluations, constraints):
     for i in range(len(b_i)):
         index = b_i[i]
         individual = population[index]
@@ -187,20 +187,26 @@ def neighborhood_actualization(subproblem, child, child_evaluation, child_restri
             individual_tc = tchebycheff_formulation((f1, f2), z, weights[index])
             if child_tc <= individual_tc:
                 population[index] = child
-                break
+                if dimension == 16:
+                    break
         elif (cv < 0) and (child_restrictions == 0):
             population[index] = child
-            break
+            if dimension == 16:
+                    break
         elif (cv < 0) and (child_restrictions < 0):
             if child_restrictions > cv:
                 population[index] = child
-                break
+                if dimension == 16:
+                    break
     return population
 
-def export_all_pop(allpop, gen, pop):
+def export_all_pop(population, evaluations, gen, pop):
     with open("stats/allpop"+ str(pop) + "g" + str(gen) +".out", "w") as file:
-        for f1,f2 in allpop:
-            file.write(str(f1) + "\t" + str(f2) + "\n")  
+        for individual in population:
+            f1, f2 = evaluations.get(tuple(individual))
+            r1 = restriction1(individual)
+            r2 = restriction2(individual)
+            file.write("{:6e}".format(f1) + "\t" + "{:6e}".format(f2) + "\t" + "{:6e}".format(r1+r2) + "\n")  
 
 def export_last_gen(population, evaluations, cv):
     with open("stats/result.txt", "w") as file:
@@ -274,11 +280,11 @@ if __name__ == "__main__":
                 EVALUATIONS = EVALUATIONS + 1
                 if r1 >= 0 and r2 >= 0:
                     Z = compare_z(Z, child_evaluation)
-                INITIAL_POPULATION = neighborhood_actualization(j, child, child_evaluation, child_restrictions, INITIAL_POPULATION, b_i, WEIGHTS_VECTOR, Z, EVALUATED_POPULATION, CONSTRAINTS_POPULATION)
+                INITIAL_POPULATION = neighborhood_actualization(DIMENSION,j, child, child_evaluation, child_restrictions, INITIAL_POPULATION, b_i, WEIGHTS_VECTOR, Z, EVALUATED_POPULATION, CONSTRAINTS_POPULATION)
                 ALL_POP.append(child_evaluation)
     print("|--------------------------------------------------|")
     print("| total evaluations:", str(EVALUATIONS))
     print("| exporting results...")
     print("|--------------------------------------------------|")
-    #export_all_pop(ALL_POP, NUMBER_OF_GENERATIONS, POPULATION_SIZE)
+    export_all_pop(INITIAL_POPULATION, EVALUATED_POPULATION, POPULATION_SIZE, DIMENSION)
     export_last_gen(INITIAL_POPULATION, EVALUATED_POPULATION, CONSTRAINTS_POPULATION)

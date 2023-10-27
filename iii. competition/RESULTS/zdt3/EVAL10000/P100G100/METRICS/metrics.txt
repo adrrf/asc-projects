@@ -1,0 +1,10 @@
+Reference point for hypervolume calculation
+ref[1]=0.9149748000
+ref[2]=1.1463890000
+
+Front 1 hypervolume: 0.9636131245
+Front 1 spacing: 0.0612119991
+Front 2 hypervolume: 0.9686277031
+Front 2 spacing: 0.0047575538
+C(front2,front1)=0.6262626263
+C(front1,front2)=0.1111111111

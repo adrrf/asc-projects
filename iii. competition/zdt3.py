@@ -136,19 +136,15 @@ def neighborhood_actualization(child, child_evaluation, population, b_i, weights
             population[index] = child
     return population
 
-def export_all_pop(allpop, gen, pop):
+def export_all_pop(allpop, gen, pop,):
     with open("stats/allpop"+ str(pop) + "g" + str(gen) +".out", "w") as file:
         for f1,f2 in allpop:
-            file.write(str(f1) + "\t" + str(f2) + "\n")  
+            file.write("{:6e}".format(f1) + "\t" + "{:6e}".format(f2) + "\t" + "{:6e}".format(0) + "\n")  
 
 
 def export_last_gen(population, evaluations):
-    with open("stats/result.txt", "w") as file:
-        for individual in population:
-            f1, f2 = evaluations.get(tuple(individual))
-            file.write(str(f1) + "\t" + str(f2) + "\n")  
     #open the pareto front data
-    with open("stats/PF.dat", "r") as file:
+    with open("stats/zdt3/PF.dat", "r") as file:
         data = file.readlines()
     #plot the pareto front
     x = [float(line.split("\t")[0]) for line in data]
