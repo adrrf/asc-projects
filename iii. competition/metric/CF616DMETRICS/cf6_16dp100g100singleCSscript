@@ -1,0 +1,51 @@
+if [ -f ./tmp_cf6_16dp100g100/cs_total.out ]
+then
+        rm ./tmp_cf6_16dp100g100/cs_total.out
+fi
+if [ -f ./tmp_cf6_16dp100g100/cs2_total.out ]
+then
+        rm ./tmp_cf6_16dp100g100/cs2_total.out
+fi
+if [ -f ./tmp_cf6_16dp100g100/hypervol_total.out ]
+then
+        rm ./tmp_cf6_16dp100g100/hypervol_total.out
+fi
+if [ -f ./tmp_cf6_16dp100g100/hypervol2_total.out ]
+then
+        rm ./tmp_cf6_16dp100g100/hypervol2_total.out
+fi
+if [ -f ./tmp_cf6_16dp100g100/spacing_total.out ]
+then
+        rm ./tmp_cf6_16dp100g100/spacing_total.out
+fi
+if [ -f ./tmp_cf6_16dp100g100/spacing2_total.out ]
+then
+        rm ./tmp_cf6_16dp100g100/spacing2_total.out
+fi
+
+
+cont=$((0));
+for j in 01 02 03 04 05 06 07 08 09 10
+do
+cont=$(($cont+1));
+cp ./cf6_16d/EVAL10000/P100G100/allpop100g100seed$j.out ./tmp_cf6_16dp100g100/allpop100g100f$cont.out
+done
+cont=$((0));
+for j in 01 02 03 04 05 06 07 08 09 099
+do
+cont=$(($cont+1));
+cp ./nsgaii/cf6_16d/EVAL10000/P100G100/cf6_16d_all_popmp100g100_seed$j.out ./tmp_cf6_16dp100g100/allpop100g100s$cont.out
+done
+echo $cont
+for ((i=1;i<=$cont;i++))
+do
+cp ./tmp_cf6_16dp100g100/allpop100g100f$i.out cf6_16d_all_popmp100g100_unknown.out
+cp ./tmp_cf6_16dp100g100/allpop100g100s$i.out cf6_16d_all_popmp100g100_nsgaii.out
+./metrics < cf6_16dp100g100stsingleCS.in
+cat cs.out >> ./tmp_cf6_16dp100g100/cs_total.out
+cat cs2.out >> ./tmp_cf6_16dp100g100/cs2_total.out
+cat hypervol.out >> ./tmp_cf6_16dp100g100/hypervol_total.out
+cat hypervol2.out >> ./tmp_cf6_16dp100g100/hypervol2_total.out
+cat spacing.out >> ./tmp_cf6_16dp100g100/spacing_total.out
+cat spacing2.out >> ./tmp_cf6_16dp100g100/spacing2_total.out
+done
